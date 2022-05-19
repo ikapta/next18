@@ -1,17 +1,17 @@
 
-import { Text } from "@mantine/core";
+import { Text, Group, Input } from "@mantine/core";
 import { useState, useTransition, Suspense, useCallback } from "react";
 
 export default function Defer() {
   const [content, setContent] = useState("");
   const [value, setInputValue] = useState("");
-  const [isRendering, startTransition]  = useTransition()
+  const [isPending, startTransition]  = useTransition()
 
   return (
     <div>
-      <div>
-        异步：
-        <input
+      <Group>
+        <Input
+          label="useTransition to defer render."
           value={value}
           onChange={(e) => {
             setInputValue(e.target.value);
@@ -22,23 +22,21 @@ export default function Defer() {
           }}
         />
 
-        同步：
-        <input
+        <Input
+          label="general usage, without transition."
           value={value}
           onChange={(e) => {
             setInputValue(e.target.value);
             setContent(e.target.value);
           }}
         />
-      </div>
+      </Group>
 
-      {isRendering ? <Text color="red">rendering...</Text> : null}
+      {isPending ? <Text color="red">rendering...</Text> : null}
 
-      <Suspense fallback={'data rendering...'}>
-        {Array.from(new Array(30000)).map((_, index) => (
-          <div key={index}>{content}</div>
-        ))}
-      </Suspense>
+      {Array.from(new Array(30000)).map((_, index) => (
+        <div key={index}>{content}</div>
+      ))}
     </div>
   );
 }
